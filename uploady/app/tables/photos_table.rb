@@ -1,16 +1,29 @@
 class PhotosTable < TableCloth::Base
-  column :filename do |photo|
-    image_tag photo.filename, size: '100x100'
-  end 
-  column :caption
+ column :filename do |photo|
+   image_tag photo.filename, size: '100x100'
+ end
+ column :caption
 
-  actions do 
-    action do |photo| 
-      link_to 'Edit Photo', edit_photo_path(photo)
-    end 
-  end 
+ actions separator: ' - ' do
+   action do |photo|
+     link_to 'Edit Photo', edit_photo_path(photo)
+   end
 
-  config.table.class ='table table-bordered'
+   action do |photo|
+     link_to 'Add Comment', new_photo_comment_path(photo)
+   end
+
+   action do |photo|
+     if photo.comments.any?
+       link_to 'View all comments', photo_comments_path(photo)
+     end
+   end
+
+ end
+
+
+ config.table.class = "table table-bordered"
+
   # Define columns with the #column method
   # column :name, :email
 

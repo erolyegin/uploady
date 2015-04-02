@@ -1,43 +1,42 @@
 class PhotosController < ApplicationController
-  before_action :authenticate_user!
-  def index
-    @photos = current_user.photos 
-  end
+ before_action :authenticate_user!
+ def index
+   @photos = current_user.photos #currently logged in user
+     #@photos = Photo.all
+ end
 
-  def new
-  	@photo = Photo.new 
-  end
+ def new
+     @photo = Photo.new
+ end
 
-  def create 
-  	@photo = Photo.new(photo_params)
+ def create
+     @photo = Photo.new(photo_params)
+   @photo.user_id = current_user.id
+     if @photo.save
+         redirect_to photos_path
+     else
+         render :new
+     end
+ end
 
-    @photo.user_id = current_user.id 
+ def edit
+   @photo = current_user.photos.find(params[:id])
+   #@photo = Photo.find(params[:id])
+ end
 
-  	if @photo.save 
-  		redirect_to photos_path 
-  	else 
-  		render :new 
-end
-end 
+ def update
+   @photo = current_user.photos.find(params[:id])
+   #@photo = Photo.find(params[:id])
+   if @photo.update_attributes(photo_params)
+     redirect_to photos_path
+   else
+     render :edit
+   end
+ end
 
-def edit
-  @photo = Photo.find(params[:id])
-  @photo = current_user.photos.find(params[:id])
-  end 
+ private #only this controller can call this parameter #can be reverted to public/protected
 
-def update
-  @photo = current_user.photos.find(params[:id])
-
-if @photo.update_atrributes(photo_params)
-redirect_to photos_path
-else
-  render :edit
-end 
-end 
-
-private 
-
-def photo_params 
-	params.require(:photo).permit(:filename, :caption) 
-end 
+ def photo_params
+     params.require(:photo).permit(:filename, :caption) 
+ end
 end
