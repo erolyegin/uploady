@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
-  get 'comments/new'
+root to: 'photo#index'
+
 
   devise_for :users
  resources :photos do 
